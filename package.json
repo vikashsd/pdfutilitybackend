@@ -1,0 +1,26 @@
+{
+  "name": "pdfutilitybackend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon src/index"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vikashsd/pdfutilitybackend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vikashsd/pdfutilitybackend/issues"
+  },
+  "homepage": "https://github.com/vikashsd/pdfutilitybackend#readme"
+}
