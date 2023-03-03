@@ -1,0 +1,40 @@
+<link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css">
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.js"></script>
+    <script src="../views/main.js"></script>
+    <link rel="stylesheet" href="../views/style.css" />
+    <style>
+      #viewerContainer {
+            overflow: auto;
+            position: absolute;
+            width: 70%;
+            height: 100%;
+           }
+   </style>
+   <title>PDF Viewer</title>
+   <body>
+    <div class="top-bar">
+      <!-- <button class="btn" id="prev-page">
+        <i class="fas fa-arrow-circle-left"></i> Prev Page
+      </button>
+      <button class="btn" id="next-page">
+        Next Page <i class="fas fa-arrow-circle-right"></i>
+      </button>
+      <span class="page-info">
+        Page <span id="page-num"></span> of <span id="page-count"></span>
+      </span> -->
+        <button id="signature" type="button">Add Sign</button>
+        <button id="addTextAnnotation" type="button">Add Annotation</button>
+      <br>
+    </div>
+    <div id="viewerContainer">
+          <div id="viewer" class="pdfViewer"></div>
+    </div>
+    <!-- <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script> -->
+  </body>

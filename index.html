@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.5" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.css">
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.0.943/web/pdf_viewer.js"></script>
+    <script src="./assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/annotpdf@1.0.15/_bundles/pdfAnnotate.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.4.0/dist/pdf-lib.min.js"></script>
+    <script src="https://unpkg.com/downloadjs@1.4.7/download.js"></script>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <style>
+      #viewerContainer {
+            overflow: auto;
+            position: absolute;
+            width: 70%;
+            height: 100%;
+           }
+   </style>
+    <title>PDF Viewer</title>
+  </head>
+  <body>
+    <div class="top-bar">
+      <!-- <button class="btn" id="prev-page">
+        <i class="fas fa-arrow-circle-left"></i> Prev Page
+      </button>
+      <button class="btn" id="next-page">
+        Next Page <i class="fas fa-arrow-circle-right"></i>
+      </button>
+      <span class="page-info">
+        Page <span id="page-num"></span> of <span id="page-count"></span>
+      </span> -->
+        My signature: <img src="./assets/img/signature.jpg" width="200" height="50"> 
+        <button id="signature" type="button" onclick="addSign()">Sign!</button><br>
+        <br>
+        Coordinates:[<span id="coords"></span>]
+        <button id="clear" type="button" >clear</button>
+        Annotation Content: <input placeholder="Content" id="content" type="text" />
+        Annotation Author: <input placeholder="Author" id="author" type="text" />
+        <button id="addTextAnnotation" type="button">Add Annotation</button>
+        <button id="addHighlightAnnotation" type="button">Highlight Annotation</button>
+        <button id="addUnderlineAnnotation" type="button">Underline Annotation</button>
+        <button id="download" type="button">Download Updated</button>
+      <br>
+    </div>
+    <div id="viewerContainer">
+          <div id="viewer" class="pdfViewer"></div>
+    </div>
+    <div style="background: lightgray; width: 100%; height:20px; position:fixed;bottom:0px;left:0px">
+      <b>Status:<span id="statusLine"></span> - # <span id="annotationCount"></span>Annotations</b>
+    </div>
+    <script>
+      const { degrees, PDFDocument, rgb, StandardFonts } = PDFLib
+
+      async function addSign() {
+        // Fetch an existing PDF document
+        const url = "./assets/pdfs/test.pdf"
+        const img = "./assets/img/signature.jpg"
+        const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer())
+  
+        // Load a PDFDocument from the existing PDF bytes
+        const pdfDoc = await PDFDocument.load(existingPdfBytes)
+  
+        console.log(document.getElementById('coords').innerText)
+        // Get the first page of the document
+        const pages = pdfDoc.getPages()
+        for (let i=0;i<pages.length;i++) {
+          var firstPage = pages[i]
+        // Get the width and height of the first page
+          const { width, height } = firstPage.getSize()
+          const jpgImageBytes = await fetch(img).then((res) => res.arrayBuffer());
+          const jpgImage = await pdfDoc.embedJpg(jpgImageBytes);
+          const jpgDims = jpgImage.scale(0.10);
+
+          firstPage.drawImage(jpgImage, {
+            x: 427,
+            y: 728,
+            width: 200, 
+            height: 50,
+          });
+        }
+
+  
+        // Serialize the PDFDocument to bytes (a Uint8Array)
+        const pdfBytes = await pdfDoc.save()
+
+  
+        // Trigger the browser to download the PDF document
+        download(pdfBytes, "sample.pdf", "application/pdf");
+      }
+    </script>
+    <!-- <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script> -->
+  </body>
+</html>

@@ -1,0 +1,6 @@
+docker-compose.yaml
+Dockerfile
+Dockerignore
+node_modules
+.idea
+src/start.sh

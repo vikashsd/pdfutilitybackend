@@ -1,0 +1,7 @@
+{
+  "name": "PDF Viewer POC",
+  "description": "PDF viewer application with Node js",
+  "repository": "https://github.com/AbhinavAnvikar/node-js-pdf-reader",
+  "logo": "https://github.com/AbhinavAnvikar/node-js-pdf-reader/main/public/node.svg",
+  "keywords": ["node", "express", "static"]
+}
