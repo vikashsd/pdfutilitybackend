@@ -42,7 +42,7 @@ var storage =   multer.diskStorage({
     callback(null, file.fieldname + '-' + Date.now());
   }
 });
-var upload = multer({ storage : storage}).single('userPhoto');
+var upload = multer({ storage : storage}).single('userDoc');
 
 
 conn.login('abhinav.anvikar@sandbox.in', 'Tillu@1990k62ckdLzZtD0uEsdaDjCobEn', (err, userInfo) => {
@@ -61,6 +61,25 @@ app.post('/upload',function(req,res){
       if(err) {
           return res.end("Error uploading file.");
       }
+      fs.createWriteStream(`./uploads/upload.pdf`,req.userDoc);
+
+      fs.readFile("./uploads/upload.pdf", (err, pdfBuffer) => {
+        console.log(pdfBuffer)
+        conn
+        .sobject("ContentVersion").create(
+            {
+              PathOnClient: "upload.pdf",
+              VersionData: pdfBuffer?.toString("base64"),
+            },
+            function (err, ret) {
+              if (err || !ret.success) {
+                return console.error(err, ret);
+              }
+              console.log("Created record id : " + ret.id);
+              // response.send({ success: ret.id });
+            }
+          );
+      });
       res.end("File is uploaded");
   });
 });
