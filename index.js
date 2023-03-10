@@ -7,7 +7,7 @@ var PDFDocument = require('pdfkit')
 var jsforce = require('jsforce')
 var app = express()
 const PDFMerger = require('pdf-merger-js');
-const merger = new PDFMerger();
+
 const Request = require('request');
 const { Console } = require('console');
 const cors = require('cors');
@@ -39,10 +39,10 @@ var storage =   multer.diskStorage({
     callback(null, './uploads');
   },
   filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + Date.now());
+    callback(null, "upload.pdf" );
   }
 });
-var upload = multer({ storage : storage}).single('userDoc');
+var upload = multer({ storage : storage}).single('file');
 
 
 conn.login('abhinav.anvikar@sandbox.in', 'Tillu@1990k62ckdLzZtD0uEsdaDjCobEn', (err, userInfo) => {
@@ -54,14 +54,30 @@ conn.login('abhinav.anvikar@sandbox.in', 'Tillu@1990k62ckdLzZtD0uEsdaDjCobEn', (
   }
 })
 
+app.post("/upload/single", (req, res) => {
+    conn
+    .sobject("ContentVersion").create(
+        {
+          PathOnClient: "upload.pdf",
+          VersionData: req.body?.toString("base64"),
+        },
+        function (err, ret) {
+          if (err || !ret.success) {
+            return console.error(err, ret);
+          }
+          console.log("Created record id : " + ret.id);
+        }
+      );
+  return res.send("Single file")
+});
 
 
 app.post('/upload',function(req,res){
+ 
   upload(req,res,function(err) {
       if(err) {
           return res.end("Error uploading file.");
       }
-      fs.createWriteStream(`./uploads/upload.pdf`,req.userDoc);
 
       fs.readFile("./uploads/upload.pdf", (err, pdfBuffer) => {
         console.log(pdfBuffer)
@@ -85,6 +101,7 @@ app.post('/upload',function(req,res){
 });
 
 app.get('/merge', async (request, response) => {
+  const merger = new PDFMerger();
   const query = "select ContentDocument.Id, ContentDocument.Title from ContentDocument where Title like 'test%'";
   conn.query(query, async (err, result) => {
     if (err) {
@@ -120,7 +137,6 @@ app.get('/merge', async (request, response) => {
               l.on('close', () => {
                 count++;
                 if (count === versionDataIds.length) {
-                  
                   // merge files
                   (async () => {
                     for (let i = 2; i <= 4; i++) {
@@ -133,7 +149,7 @@ app.get('/merge', async (request, response) => {
                       conn
                       .sobject("ContentVersion").create(
                           {
-                            PathOnClient: "_james_bond.pdf",
+                            PathOnClient: "merged.pdf",
                             VersionData: pdfBuffer.toString("base64"),
                           },
                           function (err, ret) {
@@ -141,11 +157,10 @@ app.get('/merge', async (request, response) => {
                               return console.error(err, ret);
                             }
                             console.log("Created record id : " + ret.id);
-                            // response.send({ success: ret.id });
                           }
                         );
                     });
-                    response.send("<a href='/uploads/merged.pdf'>Click here</a>")
+                    response.send("merge file uploaded with name merged.pdf ")
                   })()
                 }
               })
